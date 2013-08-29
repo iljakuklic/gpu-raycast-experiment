@@ -270,7 +270,10 @@ void compile_shader(void)
 
 int main(int argc, char **argv)
 {
-    assert(argv[1]);
+    if (argc != 2) {
+        printf("Usage: %s <heightmap.png>\n", argv[0]);
+	return 1;
+    }
 
     // initialize glut
     glutInit(&argc, argv);
@@ -300,7 +303,7 @@ int main(int argc, char **argv)
     compile_shader();
 
     load_texture(T_HEIGHTMAP, argv[1]);
-    load_texture(T_DIFFUSE, "../img/hrube_512x512.png");
+    load_texture(T_DIFFUSE, "img/hrube_512x512.png");
     
     glutMainLoop();
 }
@@ -397,12 +400,12 @@ bool loadPngImage(char *name, int &outWidth, int &outHeight, int &outChannels, G
     info_ptr = png_create_info_struct(png_ptr);
     if (info_ptr == NULL) {
         fclose(fp);
-        png_destroy_read_struct(&png_ptr, png_infopp_NULL, png_infopp_NULL);
+        png_destroy_read_struct(&png_ptr, NULL, NULL);
         return false;
     }
 
     if (setjmp(png_jmpbuf(png_ptr))) {
-        png_destroy_read_struct(&png_ptr, &info_ptr, png_infopp_NULL);
+        png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
         fclose(fp);
         return false;
     }
@@ -411,11 +414,11 @@ bool loadPngImage(char *name, int &outWidth, int &outHeight, int &outChannels, G
 
     png_set_sig_bytes(png_ptr, sig_read);
 
-    png_read_png(png_ptr, info_ptr, PNG_TRANSFORM_STRIP_16 | PNG_TRANSFORM_PACKING | PNG_TRANSFORM_EXPAND, png_voidp_NULL);
+    png_read_png(png_ptr, info_ptr, PNG_TRANSFORM_STRIP_16 | PNG_TRANSFORM_PACKING | PNG_TRANSFORM_EXPAND, NULL);
 
-    outWidth = info_ptr->width;
-    outHeight = info_ptr->height;
-    switch (info_ptr->color_type) {
+    outWidth  = png_get_image_width(png_ptr, info_ptr);
+    outHeight = png_get_image_height(png_ptr, info_ptr);
+    switch (png_get_color_type(png_ptr, info_ptr)) {
         case PNG_COLOR_TYPE_RGBA:
             outChannels = 4;
             break;
@@ -426,7 +429,7 @@ bool loadPngImage(char *name, int &outWidth, int &outHeight, int &outChannels, G
             outChannels = 1;
             break;
         default:
-            std::cout << "Color type " << info_ptr->color_type << " not supported" << std::endl;
+            std::cout << "Color type " << png_get_color_type(png_ptr, info_ptr) << " not supported" << std::endl;
             png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
             fclose(fp);
             return false;
@@ -440,7 +443,7 @@ bool loadPngImage(char *name, int &outWidth, int &outHeight, int &outChannels, G
         memcpy(*outData+(row_bytes * (outHeight-1-i)), row_pointers[i], row_bytes);
     }
     
-    png_destroy_read_struct(&png_ptr, &info_ptr, png_infopp_NULL);
+    png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 
     fclose(fp);
     return true;
