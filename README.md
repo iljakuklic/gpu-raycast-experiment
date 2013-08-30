@@ -53,6 +53,6 @@ Following controls can be used:
 References
 ----------
 
- * http://en.wikipedia.org/wiki/Normal\_mapping
- * http://en.wikipedia.org/wiki/Parallax\_mapping
- * http://http.developer.nvidia.com/GPUGems3/gpugems3\_ch18.html
+ * http://en.wikipedia.org/wiki/Normal_mapping
+ * http://en.wikipedia.org/wiki/Parallax_mapping
+ * http://http.developer.nvidia.com/GPUGems3/gpugems3_ch18.html
