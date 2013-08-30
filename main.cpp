@@ -316,8 +316,7 @@ void load_texture(int tex, const char *filename)
     GLuint tname;
     
     strcpy(fname, filename);
-    bool ok = loadPngImage(fname, wt, ht, channels, &textures[tidx]);
-    assert(ok);
+    loadPngImage(fname, wt, ht, channels, &textures[tidx]);
     std::cout << "Image loaded " << wt << " " << ht << " channels " << channels << std::endl;
 
     int type = 0;
